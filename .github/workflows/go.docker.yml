@@ -21,7 +21,7 @@ env:
 
 jobs:
   publish:
-    name: Publish Docker
+    name: Publish Docker Image
     runs-on: ubuntu-latest
 
     steps:
