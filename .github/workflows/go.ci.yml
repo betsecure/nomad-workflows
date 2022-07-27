@@ -6,7 +6,7 @@ on:
       READ_ALL_SSH_KEY:
         required: false
       CODECOV_TOKEN:
-        required: true
+        required: false
       SLACK_WEBHOOK_URL:
         required: true
 
@@ -35,11 +35,7 @@ jobs:
             https://github.com/betsecure/
 
       - name: Setup SSH key for access to dependencies
-        env:
-          # Copy the READ_ALL_SSH_KEY secret to an environment variable so that
-          # it can be used in the `if` below.
-          #
-          # See https://stackoverflow.com/a/70249520.
+        env: # See https://stackoverflow.com/a/70249520.
           READ_ALL_SSH_KEY: ${{ secrets.READ_ALL_SSH_KEY }}
         if: env.READ_ALL_SSH_KEY != ''
         uses: webfactory/ssh-agent@v0.5.4
@@ -50,6 +46,9 @@ jobs:
         run: make ci
 
       - name: Upload coverage report
+        env: # See https://stackoverflow.com/a/70249520.
+          CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
+        if: env.CODECOV_TOKEN != ''
         uses: codecov/codecov-action@v3
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
