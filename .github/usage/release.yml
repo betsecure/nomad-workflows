@@ -6,7 +6,7 @@ on:
       - "*"
 
 jobs:
-  publish:
+  shared:
     name: Nomad
-    uses: betsecure/nomad-workflows/.github/workflows/general.release.yml@main
+    uses: betsecure/nomad-workflows/.github/workflows/release.yml@main
     secrets: inherit
