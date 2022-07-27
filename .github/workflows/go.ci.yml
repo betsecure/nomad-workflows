@@ -35,7 +35,13 @@ jobs:
             https://github.com/betsecure/
 
       - name: Setup SSH key for access to dependencies
-        if: secrets.READ_ALL_SSH_KEY
+        env:
+          # Copy the READ_ALL_SSH_KEY secret to an environment variable so that
+          # it can be used in the `if` below.
+          #
+          # See https://stackoverflow.com/a/70249520.
+          READ_ALL_SSH_KEY: ${{ secrets.READ_ALL_SSH_KEY }}
+        if: env.READ_ALL_SSH_KEY != ''
         uses: webfactory/ssh-agent@v0.5.4
         with:
           ssh-private-key: ${{ secrets.READ_ALL_SSH_KEY }}
