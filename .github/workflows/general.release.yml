@@ -1,0 +1,33 @@
+# This workflow publishes a GitHub release based on a Git tag.
+
+name: Publish Release
+
+on:
+  workflow_call:
+    secrets:
+      SLACK_WEBHOOK_URL:
+        required: true
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    name: Publish release
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Publish release
+        uses: eloquent/github-release-action@v2
+
+      - name: Publish Slack notification
+        uses: ravsamhq/notify-slack-action@v1
+        if: always()
+        with:
+          status: ${{ job.status }}
+          notify_when: "failure,warnings"
+          notification_title: "<{run_url}|*{workflow}* {status_message}> for <{repo_url}|{repo}>"
+          message_format: 'Caused by "${{ github.event.head_commit.message }}" (<{commit_url}|{branch}@{commit_sha}>)'
+          footer: ""
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}

@@ -1,0 +1,76 @@
+name: Publish Docker Image
+
+on:
+  workflow_call:
+    secrets:
+      READ_ALL_SSH_KEY:
+        required: true
+      CODECOV_TOKEN:
+        required: true
+      SLACK_WEBHOOK_URL:
+        required: true
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_REGION }}
+          role-to-assume: ${{ secrets.AWS_ROLE }}
+
+env:
+  GOPRIVATE: github.com/betsecure/*
+
+jobs:
+  publish:
+    name: Publish Docker
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Set up Go
+        uses: actions/setup-go@v3
+        with:
+          go-version: ^1
+          check-latest: true
+
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Configure Git to use SSH
+        run: |
+          git config --global \
+            url.ssh://git@github.com/betsecure/.insteadOf \
+            https://github.com/betsecure/
+
+      - name: Setup SSH key for access to dependencies
+        uses: webfactory/ssh-agent@v0.5.4
+        with:
+          ssh-private-key: ${{ secrets.READ_ALL_SSH_KEY }}
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_REGION }}
+          role-to-assume: ${{ secrets.AWS_ROLE }}
+          role-skip-session-tagging: true
+          role-duration-seconds: 900
+
+      - name: Login to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v1
+
+      - name: Push Docker image
+        env:
+          DOCKER_REPO: ${{ steps.login-ecr.outputs.registry }}/${{ github.event.repository.name }}
+          DOCKER_TAGS: ${{ github.ref_name }}
+        run: docker buildx create --use && make docker-push
+
+      - name: Publish Slack notification
+        uses: ravsamhq/notify-slack-action@v1
+        if: always()
+        with:
+          status: ${{ job.status }}
+          notify_when: "failure,warnings"
+          notification_title: "<{run_url}|*{workflow}* {status_message}> for <{repo_url}|{repo}>"
+          message_format: 'Caused by "${{ github.event.head_commit.message }}" (<{commit_url}|{branch}@{commit_sha}>)'
+          footer: ""
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}

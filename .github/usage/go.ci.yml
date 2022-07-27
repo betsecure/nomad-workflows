@@ -1,0 +1,11 @@
+name: Continuous Integration
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  ci:
+    name: Nomad
+    uses: betsecure/nomad-workflows/.github/workflows/go.ci.yml@main
+    secrets: inherit

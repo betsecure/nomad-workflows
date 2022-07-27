@@ -1,0 +1,11 @@
+name: Continuous Integration
+
+on:
+  schedule:
+    - cron: 0 14 * * 0
+
+jobs:
+  ci:
+    name: Nomad
+    uses: betsecure/nomad-workflows/.github/workflows/go.ci.yml@main
+    secrets: inherit
