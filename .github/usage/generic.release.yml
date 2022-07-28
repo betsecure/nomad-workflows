@@ -1,0 +1,12 @@
+name: Publish Release
+
+on:
+  push:
+    tags:
+      - "*"
+
+jobs:
+  shared:
+    name: Nomad
+    uses: betsecure/nomad-workflows/.github/workflows/generic.release.yml@main
+    secrets: inherit

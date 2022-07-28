@@ -1,19 +1,14 @@
-name: Publish Docker Image
+# This workflow publishes a GitHub release based on a Git tag, and attaches
+# assets that are archives containing the release binaries.
+
+name: Publish Release
 
 on:
   workflow_call:
     secrets:
       READ_ALL_SSH_KEY:
-        required: true
+        required: false
       SLACK_WEBHOOK_URL:
-        required: true
-      AWS_ACCESS_KEY_ID:
-        required: true
-      AWS_SECRET_ACCESS_KEY:
-        required: true
-      AWS_REGION:
-        required: true
-      AWS_ROLE:
         required: true
 
 env:
@@ -21,8 +16,8 @@ env:
   READ_ALL_SSH_KEY: ${{ secrets.READ_ALL_SSH_KEY }} # See https://stackoverflow.com/a/70249520.
 
 jobs:
-  docker:
-    name: Publish Docker Image
+  release:
+    name: Publish release
     runs-on: ubuntu-latest
 
     steps:
@@ -45,25 +40,14 @@ jobs:
         with:
           ssh-private-key: ${{ secrets.READ_ALL_SSH_KEY }}
 
-      - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@v1
+      - name: Build archives containing release binaries
+        run: make archives
+
+      - name: Publish release
+        uses: eloquent/github-release-action@v2
         with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: ${{ secrets.AWS_REGION }}
-          role-to-assume: ${{ secrets.AWS_ROLE }}
-          role-skip-session-tagging: true
-          role-duration-seconds: 900
-
-      - name: Login to Amazon ECR
-        id: login-ecr
-        uses: aws-actions/amazon-ecr-login@v1
-
-      - name: Push Docker image
-        env:
-          DOCKER_REPO: ${{ steps.login-ecr.outputs.registry }}/${{ github.event.repository.name }}
-          DOCKER_TAGS: ${{ github.ref_name }}
-        run: docker buildx create --use && make docker-push
+          assets:
+            - path: artifacts/archives/*
 
       - name: Publish Slack notification
         uses: ravsamhq/notify-slack-action@v1
