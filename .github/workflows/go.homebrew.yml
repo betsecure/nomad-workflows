@@ -1,13 +1,15 @@
-# This workflow publishes a GitHub release based on a Git tag, and attaches
-# assets that are archives containing the release binaries.
+# This workflow publishes a GitHub release and updates the Nomad tap.
+# It replaces "generic.release.yml"; do not use them together.
 
-name: Publish Release
+name: Publish Homebrew Release
 
 on:
   workflow_call:
     secrets:
       READ_ALL_SSH_KEY:
         required: false
+      HOMEBREW_GITHUB_TOKEN:
+        required: true
       SLACK_WEBHOOK_URL:
         required: true
 
@@ -17,7 +19,7 @@ env:
 
 jobs:
   release:
-    name: Publish release
+    name: Publish Homebrew release
     runs-on: ubuntu-latest
 
     steps:
@@ -43,11 +45,23 @@ jobs:
       - name: Build archives containing release binaries
         run: make archives
 
-      - name: Publish release
+      - name: Publish GitHub release
         uses: eloquent/github-release-action@v2
         with:
           assets:
             - path: artifacts/archives/*
+
+      - name: Build Homebrew formula
+        run: make homebrew
+
+      - name: Upload Homebrew formula
+        uses: cpina/github-action-push-to-another-repository@main
+        env:
+          API_TOKEN_GITHUB: ${{ secrets.HOMEBREW_GITHUB_TOKEN }}
+        with:
+          source-directory: artifacts/homebrew
+          destination-github-username: "betsecure"
+          destination-repository-name: "homebrew-nomad"
 
       - name: Publish Slack notification
         uses: ravsamhq/notify-slack-action@v1
