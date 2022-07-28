@@ -5,8 +5,6 @@ on:
     secrets:
       READ_ALL_SSH_KEY:
         required: false
-      CODECOV_TOKEN:
-        required: false
       SLACK_WEBHOOK_URL:
         required: true
 
@@ -44,14 +42,6 @@ jobs:
 
       - name: Make
         run: make ci
-
-      - name: Upload coverage report
-        env: # See https://stackoverflow.com/a/70249520.
-          CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
-        if: env.CODECOV_TOKEN != ''
-        uses: codecov/codecov-action@v3
-        with:
-          token: ${{ secrets.CODECOV_TOKEN }}
 
       - name: Publish Slack notification
         uses: ravsamhq/notify-slack-action@v1
