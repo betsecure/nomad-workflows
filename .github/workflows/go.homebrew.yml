@@ -63,15 +63,15 @@ jobs:
           destination-github-username: "betsecure"
           destination-repository-name: "homebrew-nomad"
 
-      # - name: Publish Slack notification
-      #   uses: ravsamhq/notify-slack-action@v1
-      #   if: always()
-      #   with:
-      #     status: ${{ job.status }}
-      #     notify_when: "failure,warnings"
-      #     notification_title: "<{run_url}|*{workflow}* {status_message}> for <{repo_url}|{repo}>"
-      #     message_format: "Caused by ${{ env.CAUSE_MESSAGE }}(<{commit_url}|{branch}@{commit_sha}>)"
-      #     footer: ""
-      #   env:
-      #     CAUSE_MESSAGE: ${{ github.event.head_commit.message && '"${{ github.event.head_commit.message }}" ' || '' }}
-      #     SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+      - name: Publish Slack notification
+        uses: ravsamhq/notify-slack-action@v1
+        if: always()
+        with:
+          status: ${{ job.status }}
+          notify_when: "failure,warnings"
+          notification_title: "<{run_url}|*{workflow}* {status_message}> for <{repo_url}|{repo}>"
+          message_format: "Caused by ${{ env.CAUSE_MESSAGE }}(<{commit_url}|{branch}@{commit_sha}>)"
+          footer: ""
+        env:
+          CAUSE_MESSAGE: ${{ github.event.head_commit.message && '"${{ github.event.head_commit.message }}" ' || '' }}
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
