@@ -46,9 +46,9 @@ jobs:
         run: make archives
 
       - name: Publish GitHub release
-        uses: eloquent/github-release-action@assets-input
+        uses: eloquent/github-release-action@v2.1.0
         with:
-          assetsYAML: |
+          assets: |
             - path: artifacts/archives/*
 
       - name: Build Homebrew formula
