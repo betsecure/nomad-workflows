@@ -17,7 +17,7 @@ jobs:
 
     services:
       postgres:
-        image: postgis/postgis:14-3.2
+        image: kartoza/postgis:14-3
         options: >-
           --health-cmd pg_isready
           --health-interval 2s
@@ -26,8 +26,9 @@ jobs:
         ports:
           - 5432/tcp
         env:
+          POSTGRES_DBNAME: nomad
           POSTGRES_USER: nomad
-          POSTGRES_PASSWORD: nomad
+          POSTGRES_PASS: nomad
 
     steps:
       - name: Set up Go
