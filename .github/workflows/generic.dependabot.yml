@@ -6,7 +6,7 @@ on:
   workflow_call:
     secrets:
       DEPENDABOT_GITHUB_TOKEN:
-        required: false
+        required: true
 
 jobs:
   dependabot:
