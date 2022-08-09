@@ -1,0 +1,27 @@
+# This workflow automatically merges Dependabot PRs for trusted dependencies.
+
+name: Dependabot
+
+on:
+  workflow_call:
+
+jobs:
+  dependabot:
+    name: Merge PR
+    runs-on: ubuntu-latest
+    if: github.actor == 'dependabot[bot]'
+
+    steps:
+      - name: Load Dependabot meta-data
+        uses: dependabot/fetch-metadata@v1.3.3
+        id: dependabot-metadata
+
+      - name: Auto-merge minor/patch updates to approved dependencies
+        run: gh pr comment "${{ github.event.pull_request.html_url }}" --body "@dependabot merge"
+        if: >
+          steps.dependabot-metadata.outputs.update-type != 'version-update:semver-major'
+          && (
+               startsWith(steps.dependabot-metadata.outputs.dependency-names, 'github.com/betsecure/')
+            || startsWith(steps.dependabot-metadata.outputs.dependency-names, 'github.com/dogmatiq/')
+            || startsWith(steps.dependabot-metadata.outputs.dependency-names, 'golang.org/x/')
+          )

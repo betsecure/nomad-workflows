@@ -1,0 +1,14 @@
+name: Dependabot
+
+on:
+  pull_request_target:
+
+permissions:
+  pull-requests: write
+  contents: write
+
+jobs:
+  shared:
+    name: Nomad
+    uses: betsecure/nomad-workflows/.github/workflows/generic.dependabot.yml@main
+    secrets: inherit
