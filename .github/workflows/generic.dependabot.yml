@@ -18,6 +18,8 @@ jobs:
 
       - name: Auto-merge minor/patch updates to approved dependencies
         run: gh pr comment "${{ github.event.pull_request.html_url }}" --body "@dependabot merge"
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         if: >
           steps.dependabot-metadata.outputs.update-type != 'version-update:semver-major'
           && (
