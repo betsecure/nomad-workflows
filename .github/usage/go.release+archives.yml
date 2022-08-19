@@ -8,5 +8,5 @@ on:
 jobs:
   shared:
     name: Nomad
-    uses: betsecure/nomad-workflows/.github/workflows/go.homebrew.yml@main
+    uses: betsecure/nomad-workflows/.github/workflows/go.release+binaries.yml@main
     secrets: inherit

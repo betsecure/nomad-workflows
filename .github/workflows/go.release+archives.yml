@@ -1,7 +1,9 @@
-# This workflow publishes a GitHub release and updates the Nomad tap.
+# This workflow publishes archives containing Go binaries to a GitHub release,
+# homebrew tap, etc.
+#
 # It replaces "generic.release.yml"; do not use them together.
 
-name: Publish Homebrew Release
+name: Publish Release
 
 on:
   workflow_call:
@@ -17,7 +19,7 @@ env:
 
 jobs:
   release:
-    name: Publish Homebrew release
+    name: Publish release
     runs-on: ubuntu-latest
 
     steps:
@@ -48,15 +50,3 @@ jobs:
         with:
           assets: |
             - path: artifacts/archives/*
-
-      - name: Build Homebrew formula
-        run: make homebrew
-
-      - name: Upload Homebrew formula
-        uses: cpina/github-action-push-to-another-repository@main
-        env:
-          API_TOKEN_GITHUB: ${{ secrets.HOMEBREW_GITHUB_TOKEN }}
-        with:
-          source-directory: artifacts/homebrew
-          destination-github-username: "betsecure"
-          destination-repository-name: "homebrew-nomad"
