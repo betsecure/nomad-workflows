@@ -31,7 +31,7 @@ jobs:
               startsWith(steps.dependabot-metadata.outputs.dependency-names, 'golang.org/x/')
             ))
             ||
-            (steps.dependabot-metadata.outputs.package-ecosystem == 'npm' && (
+            (steps.dependabot-metadata.outputs.package-ecosystem == 'npm_and_yarn' && (
               steps.dependabot-metadata.outputs.dependency-names == '@types/node' ||
               steps.dependabot-metadata.outputs.dependency-names == 'msw'
             ))
