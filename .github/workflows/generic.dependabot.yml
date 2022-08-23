@@ -24,16 +24,13 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.DEPENDABOT_GITHUB_TOKEN }}
         if: >
-          steps.dependabot-metadata.outputs.update-type != 'version-update:semver-major' &&
-          (
+          steps.dependabot-metadata.outputs.update-type != 'version-update:semver-major' && (
             (steps.dependabot-metadata.outputs.package-ecosystem == 'go_modules' && (
               startsWith(steps.dependabot-metadata.outputs.dependency-names, 'github.com/betsecure/') ||
               startsWith(steps.dependabot-metadata.outputs.dependency-names, 'github.com/dogmatiq/') ||
               startsWith(steps.dependabot-metadata.outputs.dependency-names, 'golang.org/x/')
             ))
-
             ||
-
             (steps.dependabot-metadata.outputs.package-ecosystem == 'npm' && (
               steps.dependabot-metadata.outputs.dependency-names == '@types/node' ||
               steps.dependabot-metadata.outputs.dependency-names == 'msw'
