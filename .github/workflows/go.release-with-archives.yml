@@ -1,9 +1,5 @@
 # This workflow publishes archives containing Go binaries to a GitHub release,
 # homebrew tap, etc.
-#
-# It replaces "generic.release.yml"; do not use them together.
-
-name: Publish Release
 
 on:
   workflow_call:
@@ -19,7 +15,7 @@ env:
 
 jobs:
   release:
-    name: Publish release
+    name: Go Release w/ Archives
     runs-on: ubuntu-latest
 
     steps:

@@ -1,5 +1,3 @@
-name: Publish Docker Image
-
 on:
   workflow_call:
     secrets:
@@ -20,7 +18,7 @@ env:
 
 jobs:
   docker:
-    name: Publish Docker Image
+    name: Go + Docker
     runs-on: ubuntu-latest
 
     steps:
@@ -57,7 +55,7 @@ jobs:
         id: login-ecr
         uses: aws-actions/amazon-ecr-login@v1
 
-      - name: Push Docker image
+      - name: Build and push Docker image
         env:
           DOCKER_REPO: ${{ steps.login-ecr.outputs.registry }}/${{ github.event.repository.name }}
           DOCKER_TAGS: ${{ github.ref_name }}

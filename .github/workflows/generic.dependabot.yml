@@ -1,7 +1,5 @@
 # This workflow automatically merges Dependabot PRs for trusted dependencies.
 
-name: Dependabot
-
 on:
   workflow_call:
     secrets:
@@ -10,7 +8,7 @@ on:
 
 jobs:
   dependabot:
-    name: Merge PR
+    name: Dependabot
     runs-on: ubuntu-latest
     if: github.actor == 'dependabot[bot]'
 
