@@ -30,7 +30,11 @@ jobs:
             ))
             ||
             (steps.dependabot-metadata.outputs.package-ecosystem == 'npm_and_yarn' && (
+              startsWith(steps.dependabot-metadata.outputs.dependency-names, '@typescript-eslint/') ||
+              startsWith(steps.dependabot-metadata.outputs.dependency-names, 'eslint') ||
+              startsWith(steps.dependabot-metadata.outputs.dependency-names, 'prettier') ||
               steps.dependabot-metadata.outputs.dependency-names == '@types/node' ||
-              steps.dependabot-metadata.outputs.dependency-names == 'msw'
+              steps.dependabot-metadata.outputs.dependency-names == 'msw' ||
+              steps.dependabot-metadata.outputs.dependency-names == 'typescript'
             ))
           )
