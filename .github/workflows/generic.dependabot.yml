@@ -33,6 +33,8 @@ jobs:
             ))
             ||
             (steps.dependabot-metadata.outputs.package-ecosystem == 'npm_and_yarn' && (
+              startsWith(steps.dependabot-metadata.outputs.dependency-names, '@playwright/') ||
+              startsWith(steps.dependabot-metadata.outputs.dependency-names, '@testing-library/') ||
               startsWith(steps.dependabot-metadata.outputs.dependency-names, '@types/') ||
               startsWith(steps.dependabot-metadata.outputs.dependency-names, '@typescript-eslint/') ||
               startsWith(steps.dependabot-metadata.outputs.dependency-names, 'eslint') ||
