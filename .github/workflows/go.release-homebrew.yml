@@ -56,20 +56,3 @@ jobs:
         with:
           assets: |
             - path: artifacts/archives/*
-
-      - name: Publish Homebrew formula
-        uses: Justintime50/homebrew-releaser@v1
-        with:
-          homebrew_owner: betsecure
-          homebrew_tap: homebrew-nomad
-          install: |
-            bin.install "nomad"
-          github_token: ${{ secrets.HOMEBREW_GITHUB_TOKEN }}
-          commit_owner: betsecure-gha[bot]
-          commit_email: 105341243+betsecure-gha@users.noreply.github.com
-          update_readme_table: true
-          target_darwin_amd64: true
-          target_darwin_arm64: true
-          target_linux_amd64: true
-          target_linux_arm64: true
-          debug: true
