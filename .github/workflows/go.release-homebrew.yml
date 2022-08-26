@@ -62,6 +62,8 @@ jobs:
         with:
           homebrew_owner: betsecure
           homebrew_tap: homebrew-nomad
+          install: |
+            bin.install "nomad"
           github_token: ${{ secrets.HOMEBREW_GITHUB_TOKEN }}
           commit_owner: betsecure-gha[bot]
           commit_email: 105341243+betsecure-gha@users.noreply.github.com
