@@ -1,0 +1,55 @@
+# This workflow publishes archives containing Go binaries to a GitHub release,
+# homebrew tap, etc.
+
+on:
+  workflow_call:
+    secrets:
+      READ_ALL_SSH_KEY:
+        required: false
+      HOMEBREW_GITHUB_TOKEN:
+        required: true
+
+env:
+  GOPRIVATE: github.com/betsecure/*
+  READ_ALL_SSH_KEY: ${{ secrets.READ_ALL_SSH_KEY }} # See https://stackoverflow.com/a/70249520.
+
+jobs:
+  release:
+    name: Go Homebrew Release
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Set up Go
+        uses: actions/setup-go@v3
+        with:
+          go-version: ^1
+          check-latest: true
+
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Configure Git to use SSH
+        if: env.READ_ALL_SSH_KEY != ''
+        run: git config --global url.ssh://git@github.com/betsecure/.insteadOf https://github.com/betsecure/
+
+      - name: Setup SSH key for access to dependencies
+        if: env.READ_ALL_SSH_KEY != ''
+        uses: webfactory/ssh-agent@v0.5.4
+        with:
+          ssh-private-key: ${{ secrets.READ_ALL_SSH_KEY }}
+
+      - name: Build archives containing release binaries
+        run: make archives
+
+      - name: Publish GitHub release
+        uses: eloquent/github-release-action@v2.1.0
+        with:
+          assets: |
+            - path: artifacts/archives/*
+
+      - name: Publish Homebrew formula
+        uses: Justintime50/homebrew-releaser@v1
+        with:
+          homebrew_owner: betsecure
+          homebrew_tap: homebrew-nomad
+          github_token: ${{ secrets.HOMEBREW_GITHUB_TOKEN }}
