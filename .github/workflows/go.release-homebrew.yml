@@ -52,7 +52,7 @@ jobs:
         run: make archives
 
       - name: Publish GitHub release
-        uses: eloquent/github-release-action@v2.1.0
+        uses: eloquent/github-release-action@v2.1.2
         with:
           assets: |
             - path: artifacts/archives/*
