@@ -29,9 +29,10 @@ jobs:
               startsWith(steps.dependabot-metadata.outputs.dependency-names, 'golang.org/x/') ||
               steps.dependabot-metadata.outputs.dependency-names == 'github.com/google/go-cmp' ||
               steps.dependabot-metadata.outputs.dependency-names == 'github.com/jackc/pgx/v4' ||
+              steps.dependabot-metadata.outputs.dependency-names == 'github.com/prometheus/client_golang' ||
+              steps.dependabot-metadata.outputs.dependency-names == 'go.uber.org/zap' ||
               steps.dependabot-metadata.outputs.dependency-names == 'google.golang.org/grpc' ||
-              steps.dependabot-metadata.outputs.dependency-names == 'google.golang.org/protobuf' ||
-              steps.dependabot-metadata.outputs.dependency-names == 'go.uber.org/zap'
+              steps.dependabot-metadata.outputs.dependency-names == 'google.golang.org/protobuf'
             ))
             ||
             (steps.dependabot-metadata.outputs.package-ecosystem == 'npm_and_yarn' && (
